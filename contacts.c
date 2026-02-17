@@ -7,17 +7,16 @@
 void add_contact(Contact contacts[], int *count)
 {
     if (*count >= MAX)
-    return;
+    {
+        printf("Contact list is full.\n");
+        return;
+    }
 
     contacts[*count].name = get_string("What's your contact name? ");
-
     contacts[*count].tel = get_string("What's your contact telephone number? ");
-
     contacts[*count].email = get_string("What's your contact email address? ");
 
     (*count)++;
-
-    return;
 }
 
 void list_contacts(Contact contacts[], int count)
@@ -32,7 +31,6 @@ void list_contacts(Contact contacts[], int count)
     {
         printf("%s, %s, %s\n", contacts[i].name, contacts[i].tel, contacts[i].email);
     }
-    return;
 }
 
 void save_contacts(Contact contacts[], int count)
@@ -52,7 +50,6 @@ void save_contacts(Contact contacts[], int count)
 
     fclose(file);
     printf("Contacts saved.\n");
-    return;
 }
 
 void load_contacts(Contact contacts[], int *count)
@@ -67,9 +64,14 @@ void load_contacts(Contact contacts[], int *count)
 
     while (fgets(line, sizeof(line), file) != NULL)
     {
-        int len = strlen(line);
+        if (*count >= MAX)
+        {
+            printf("Can't load more contacts. Surpassed limit (%d).\n", MAX);
+            break;
+        }
 
-        if (line[len - 1] == '\n')
+        int len = strlen(line);
+        if (len > 0 && line[len - 1] == '\n')
         {
             line[len - 1] = '\0';
         }
@@ -80,6 +82,7 @@ void load_contacts(Contact contacts[], int *count)
 
         if (token1 == NULL || token2 == NULL || token3 == NULL)
         {
+            printf("Invalid CSV line skipped: %s.\n", line);
             continue;
         }
 
@@ -87,11 +90,28 @@ void load_contacts(Contact contacts[], int *count)
         contacts[*count].tel = strdup(token2);
         contacts[*count].email = strdup(token3);
 
-        if (*count >= MAX)
-        {
-            break;
-        }
         (*count)++;
     }
+
     fclose(file);
+}
+
+void free_contacts(Contact contacts[], int count)
+{
+    for (int i = 0; i < count; i++) 
+    {
+        free(contacts[i].name); 
+        free(contacts[i].tel);
+        free(contacts[i].email);
+
+        contacts[i].name = NULL; 
+        contacts[i].tel = NULL;
+        contacts[i].email = NULL;
+    }
+}
+
+void clear_contacts(Contact contacts[], int *count)
+{
+    free_contacts(contacts, *count);
+    *count = 0;
 }

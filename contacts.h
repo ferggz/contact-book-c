@@ -1,5 +1,5 @@
-#include <cs50.h>
-#include <stdio.h>
+#ifndef CONTACTS_H
+#define CONTACTS_H
 
 #define MAX 100
 
@@ -17,3 +17,9 @@ void list_contacts(Contact contacts[], int count);
 void save_contacts(Contact contacts[], int count);
 
 void load_contacts(Contact contacts[], int *count);
+
+void free_contacts(Contact contacts[], int count);
+
+void clear_contacts(Contact contacts[], int *count);
+
+#endif

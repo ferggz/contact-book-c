@@ -1,11 +1,14 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "contacts.h"
 
 int main(void)
 {
     Contact contacts[MAX];
     int count = 0;
+    load_contacts(contacts, &count);
+    printf("Loaded %i contacts.\n", count);
 
     int option;
 
@@ -33,6 +36,7 @@ int main(void)
             break;
 
             case 4:
+            free_contacts(contacts, count);
             printf("Bye!\n");
             return 0;
 
